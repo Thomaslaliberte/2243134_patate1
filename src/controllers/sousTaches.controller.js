@@ -21,7 +21,7 @@ exports.creerUneSousTache = (req, res) => {
         });
         return;
     };
-    Taches.verifierUneTache(req)
+    Taches.verifierUneTache(req.body.tache_id)
         .then((valeur) => {
             if (valeur != "") {
                 SousTaches.creerUneSousTache(req)
@@ -43,7 +43,7 @@ exports.creerUneSousTache = (req, res) => {
             else {
                 res.status(404)
                 res.send({
-                    message: "la tache " + [req.params.id] + " n'existe pas"
+                    message: "la tache " + [req.body.tache_id] + " n'existe pas"
                 });
             }
 

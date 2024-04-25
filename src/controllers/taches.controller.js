@@ -174,7 +174,7 @@ exports.modifierUneTache = (req, res) => {
         });
         return;
     }
-    Taches.verifierUneTache(req)
+    Taches.verifierUneTache(req.params.id)
         .then((valeur) => {
             if (valeur != "") {
                 // Appel à la fonction trouverUnProfesseur dans le modèle
@@ -228,7 +228,7 @@ exports.modifierStatusTache = (req, res) => {
         });
         return;
     }
-    Taches.verifierUneTache(req)
+    Taches.verifierUneTache(req.params.id)
         .then((valeur) => {
             if (valeur != "") {
                 // Appel à la fonction trouverUnProfesseur dans le modèle
@@ -270,7 +270,7 @@ exports.modifierStatusTache = (req, res) => {
 exports.supprimerUneTache = (req, res) => {
     // Teste si le paramètre id est présent et valide
 
-    Taches.verifierUneTache(req)
+    Taches.verifierUneTache(req.params.id)
         .then((valeur) => {
             if (valeur[0]) {
                 // Appel à la fonction trouverUnProfesseur dans le modèle

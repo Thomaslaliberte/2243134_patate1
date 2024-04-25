@@ -115,10 +115,10 @@ Taches.modifierStatusTache = (req) => {
     });
 };
 
-Taches.verifierUneTache = (req) => {
+Taches.verifierUneTache = (id) => {
     return new Promise((resolve, reject) => {
         let requete = `SELECT id FROM taches WHERE id = $1`;
-        let params = [req.params.id]
+        let params = [id]
         
         
 
