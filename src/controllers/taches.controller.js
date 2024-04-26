@@ -30,12 +30,10 @@ exports.creerUneTache = (req, res) => {
         });
         return;
     };
-    // Appel à la fonction trouverUnProfesseur dans le modèle
     Taches.creerUneTache(req)
 
         // Si c'est un succès
         .then((tache) => {
-            // Sinon on retourne le premier objet du tableau de résultat car on ne devrait avoir qu'un professeur par id
             res.send({ message: "la tache " + req.body.titre + " à été ajouter avec succès" });
         })
         // S'il y a eu une erreur au niveau de la requête, on retourne un erreur 500 car c'est du serveur que provient l'erreur.
@@ -58,7 +56,6 @@ exports.trouverUneTache = (req, res) => {
         return;
     }
 
-    // Appel à la fonction trouverUnProfesseur dans le modèle
     Taches.trouverUneTache(req.params.id)
         // Si c'est un succès
         .then((tache) => {
@@ -70,8 +67,28 @@ exports.trouverUneTache = (req, res) => {
                 });
                 return;
             }
-            // Sinon on retourne le premier objet du tableau de résultat car on ne devrait avoir qu'un professeur par id
-            res.send(tache[0]);
+
+            SousTaches.trouverToutesLesSousTaches(req.params.id)
+                // Si c'est un succès
+                .then((sousTache) => {
+                    // S'il n'y a aucun résultat, on retourne un message d'erreur avec le code 404
+                    if (!tache[0]) {
+                        res.status(404);
+                        res.send({
+                            message: `sous-tache introuvable avec l'id ${req.params.id}`
+                        });
+                        return;
+                    }
+                    res.send({tache: tache[0] ,sousTache});
+                })
+                // S'il y a eu une erreur au niveau de la requête, on retourne un erreur 500 car c'est du serveur que provient l'erreur.
+                .catch((erreur) => {
+                    console.log('Erreur : ', erreur);
+                    res.status(500)
+                    res.send({
+                        message: "Erreur lors de la récupération de la  tache"
+                    });
+                });
         })
         // S'il y a eu une erreur au niveau de la requête, on retourne un erreur 500 car c'est du serveur que provient l'erreur.
         .catch((erreur) => {
@@ -96,7 +113,7 @@ exports.trouverLesTaches = (req, res) => {
         return;
     };
     if (!req.body.complete) {
-        // Appel à la fonction trouverUnProfesseur dans le modèle
+
         Taches.trouverLesTaches(req.body.utilisateur_id)
             // Si c'est un succès
             .then((taches) => {
@@ -108,7 +125,6 @@ exports.trouverLesTaches = (req, res) => {
                     });
                     return;
                 }
-                // Sinon on retourne le premier objet du tableau de résultat car on ne devrait avoir qu'un professeur par id
                 res.send(taches);
             })
             // S'il y a eu une erreur au niveau de la requête, on retourne un erreur 500 car c'est du serveur que provient l'erreur.
@@ -132,7 +148,6 @@ exports.trouverLesTaches = (req, res) => {
                     });
                     return;
                 }
-                // Sinon on retourne le premier objet du tableau de résultat car on ne devrait avoir qu'un professeur par id
                 res.send(taches);
             })
             // S'il y a eu une erreur au niveau de la requête, on retourne un erreur 500 car c'est du serveur que provient l'erreur.
@@ -177,12 +192,10 @@ exports.modifierUneTache = (req, res) => {
     Taches.verifierUneTache(req.params.id)
         .then((valeur) => {
             if (valeur != "") {
-                // Appel à la fonction trouverUnProfesseur dans le modèle
                 Taches.modifierUneTache(req)
                     // Si c'est un succès
                     .then((tache) => {
 
-                        // Sinon on retourne le premier objet du tableau de résultat car on ne devrait avoir qu'un professeur par id
                         res.send({ message: "La tache " + [req.params.id] + " a été modifier avec succès", tache: { id: req.params.id, titre: req.body.titre, description: req.body.desciption, date_debut: req.body.date_debut, date_echeance: req.body.date_echeance, complete: req.body.complete } })
                     })
                     // S'il y a eu une erreur au niveau de la requête, on retourne un erreur 500 car c'est du serveur que provient l'erreur.
@@ -231,12 +244,10 @@ exports.modifierStatusTache = (req, res) => {
     Taches.verifierUneTache(req.params.id)
         .then((valeur) => {
             if (valeur != "") {
-                // Appel à la fonction trouverUnProfesseur dans le modèle
                 Taches.modifierStatusTache(req)
                     // Si c'est un succès
                     .then((tache) => {
 
-                        // Sinon on retourne le premier objet du tableau de résultat car on ne devrait avoir qu'un professeur par id
                         res.send({ message: "Le tache " + [req.params.id] + " a été modifier avec succès", tache: { id: req.params.id, complete: req.body.complete } })
                     })
                     // S'il y a eu une erreur au niveau de la requête, on retourne un erreur 500 car c'est du serveur que provient l'erreur.
@@ -273,7 +284,6 @@ exports.supprimerUneTache = (req, res) => {
     Taches.verifierUneTache(req.params.id)
         .then((valeur) => {
             if (valeur[0]) {
-                // Appel à la fonction trouverUnProfesseur dans le modèle
                 SousTaches.supprimerUneSousTache(req)
                     // Si c'est un succès
                     .then((tache2) => {
@@ -282,7 +292,6 @@ exports.supprimerUneTache = (req, res) => {
                             // Si c'est un succès
                             .then((tache) => {
 
-                                // Sinon on retourne le premier objet du tableau de résultat car on ne devrait avoir qu'un professeur par id
                                 res.send({ message: "La tache " + [req.params.id] + " a été supprimer avec succès", tache: { id: req.params.id, tache: tache } })
                             })
                             // S'il y a eu une erreur au niveau de la requête, on retourne un erreur 500 car c'est du serveur que provient l'erreur.
