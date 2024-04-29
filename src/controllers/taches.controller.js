@@ -62,21 +62,21 @@ exports.trouverUneTache = (req, res) => {
         });
         return;
     }
-    Taches.verifierCle(req.headers.authorization.split(' ')[1], req.params.id)
-        .then((cle) => {
-            if (cle != "") {
-                Taches.trouverUneTache(req.params.id)
-                    // Si c'est un succès
-                    .then((tache) => {
-                        // S'il n'y a aucun résultat, on retourne un message d'erreur avec le code 404
-                        if (!tache[0]) {
-                            res.status(404);
-                            res.send({
-                                message: `Tache introuvable avec l'id ${req.params.id}`
-                            });
-                            return;
-                        }
 
+    Taches.trouverUneTache(req.params.id)
+        // Si c'est un succès
+        .then((tache) => {
+            // S'il n'y a aucun résultat, on retourne un message d'erreur avec le code 404
+            if (!tache[0]) {
+                res.status(404);
+                res.send({
+                    message: `Tache introuvable avec l'id ${req.params.id}`
+                });
+                return;
+            }
+            Taches.verifierCle(req.headers.authorization.split(' ')[1], req.params.id)
+                .then((cle) => {
+                    if (cle != "") {
                         SousTaches.trouverToutesLesSousTaches(req.params.id)
                             // Si c'est un succès
                             .then((sousTache) => {
@@ -94,37 +94,37 @@ exports.trouverUneTache = (req, res) => {
                                     message: "Erreur lors de la récupération de la  tache"
                                 });
                             });
-
-                    })
-                    // S'il y a eu une erreur au niveau de la requête, on retourne un erreur 500 car c'est du serveur que provient l'erreur.
-                    .catch((erreur) => {
-                        console.log('Erreur : ', erreur);
-                        res.status(500)
+                    }
+                    else {
+                        res.status(403)
                         res.send({
-                            message: "Erreur lors de la récupération de la  tache"
+                            message: "La tache ne vien pas de cet utilisateur"
                         });
+                    }
+                })
+                .catch((erreur) => {
+                    console.log('Erreur : ', erreur);
+                    res.status(500)
+                    res.send({
+                        message: "echec lors de la verification de la cle d'api "
                     });
-            }
-            else {
-                res.status(403)
-                res.send({
-                    message: "La tache ne vien pas de cet utilisateur"
                 });
-            }
         })
+        // S'il y a eu une erreur au niveau de la requête, on retourne un erreur 500 car c'est du serveur que provient l'erreur.
         .catch((erreur) => {
             console.log('Erreur : ', erreur);
             res.status(500)
             res.send({
-                message: "echec lors de la verification de la cle d'api "
+                message: "Erreur lors de la récupération de la  tache"
             });
         });
+
 };
 
 exports.trouverLesTaches = (req, res) => {
     var message = "";
-    if (!req.body.utilisateur_id) {
-        message += "utilisateur_id\r\n";
+    if (req.body.complete == null) {
+        message += "complete\r\n";
     }
     if (message != "") {
         res.status(400);
@@ -135,7 +135,6 @@ exports.trouverLesTaches = (req, res) => {
     };
     Taches.chercherUtilisateur(req.headers.authorization.split(' ')[1])
         .then((resultat) => {
-            console.log(resultat)
             if (!req.body.complete) {
 
                 Taches.trouverLesTaches(resultat[0].id)

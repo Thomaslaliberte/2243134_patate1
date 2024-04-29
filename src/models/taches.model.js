@@ -63,7 +63,7 @@ Taches.trouverUneTache = (id) => {
 Taches.trouverLesTaches = (id) => {
     return new Promise((resolve, reject) => {
 
-        const requete = `SELECT titre, description, date_debut, date_echeance, complete FROM taches WHERE utilisateur_id = $1 AND complete = $2`;
+        const requete = `SELECT id, titre, description, date_debut, date_echeance, complete FROM taches WHERE utilisateur_id = $1 AND complete = $2`;
         const params = [id, false];
 
         sql.query(requete, params, (erreur, resultat) => {

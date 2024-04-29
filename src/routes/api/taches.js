@@ -4,7 +4,7 @@ const router = express.Router();
 const tacheControlleur = require('../../controllers/taches.controller');
 
 
-router.get('/liste', (req, res) => {
+router.post('/liste', (req, res) => {
     tacheControlleur.trouverLesTaches(req, res)
 });
 

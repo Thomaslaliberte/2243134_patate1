@@ -6,7 +6,7 @@ const ajouterUser = require('../../controllers/user.controller');
 router.post('/', (req, res) => {
     ajouterUser.ajouterUnUser(req, res);
 });
-router.get('/cle', (req, res) => {
+router.post('/cle', (req, res) => {
     ajouterUser.nouvelleCle(req, res);
 });
 
