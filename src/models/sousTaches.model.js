@@ -122,7 +122,6 @@ SousTaches.trouverToutesLesSousTaches = (tache_id) => {
         const params = [tache_id];
 
         sql.query(requete, params, (erreur, resultat) => {
-            console.log(erreur);
             if (erreur) {
                 // S'il y a une erreur, je la retourne avec reject()
                 reject(erreur);

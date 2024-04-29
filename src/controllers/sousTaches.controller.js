@@ -24,19 +24,37 @@ exports.creerUneSousTache = (req, res) => {
     Taches.verifierUneTache(req.body.tache_id)
         .then((valeur) => {
             if (valeur != "") {
-                SousTaches.creerUneSousTache(req)
+                Taches.verifierCle(req.headers.authorization.split(' ')[1], req.body.tache_id)
+                    .then((cle) => {
+                        if (cle != "") {
+                            SousTaches.creerUneSousTache(req)
 
-                    // Si c'est un succès
-                    .then((tache) => {
-                        res.send({ message: "la sous-tache " + req.body.titre + " à été ajouter avec succès" });
+                                // Si c'est un succès
+                                .then((tache) => {
+                                    res.send({ message: "la sous-tache " + req.body.titre + " à été ajouter avec succès" });
+                                })
+                                // S'il y a eu une erreur au niveau de la requête, on retourne un erreur 500 car c'est du serveur que provient l'erreur.
+                                .catch((erreur) => {
+                                    console.log('Erreur : ', erreur);
+
+                                    res.status(500)
+                                    res.send({
+                                        message: "Erreur lors de la creation de la sous-tache"
+                                    });
+                                });
+                        }
+                        else {
+                            res.status(403)
+                            res.send({
+                                message: "La tache ne vien pas de cet utilisateur"
+                            });
+                        }
                     })
-                    // S'il y a eu une erreur au niveau de la requête, on retourne un erreur 500 car c'est du serveur que provient l'erreur.
                     .catch((erreur) => {
                         console.log('Erreur : ', erreur);
-
                         res.status(500)
                         res.send({
-                            message: "Erreur lors de la creation de la sous-tache"
+                            message: "echec lors de la verification de la cle d'api "
                         });
                     });
             }
@@ -82,18 +100,36 @@ exports.modifierUneSousTache = (req, res) => {
     SousTaches.verifierUneSousTache(req)
         .then((valeur) => {
             if (valeur != "") {
-                SousTaches.modifierUneSousTache(req)
-                    // Si c'est un succès
-                    .then((tache) => {
+                Taches.verifierCle(req.headers.authorization.split(' ')[1], req.params.id)
+                    .then((cle) => {
+                        if (cle != "") {
+                            SousTaches.modifierUneSousTache(req)
+                                // Si c'est un succès
+                                .then((tache) => {
 
-                        res.send({ message: "La sous-tache " + [req.params.id] + " a été modifier avec succès", sousTache: { id: req.params.id, titre: req.body.titre, complete: req.body.complete } })
+                                    res.send({ message: "La sous-tache " + [req.params.id] + " a été modifier avec succès", sousTache: { id: req.params.id, titre: req.body.titre, complete: req.body.complete } })
+                                })
+                                // S'il y a eu une erreur au niveau de la requête, on retourne un erreur 500 car c'est du serveur que provient l'erreur.
+                                .catch((erreur) => {
+                                    console.log('Erreur : ', erreur);
+                                    res.status(500)
+                                    res.send({
+                                        message: "echec lors de la modification de la sous-tache " + [req.params.id]
+                                    });
+                                });
+                        }
+                        else {
+                            res.status(403)
+                            res.send({
+                                message: "La tache ne vien pas de cet utilisateur"
+                            });
+                        }
                     })
-                    // S'il y a eu une erreur au niveau de la requête, on retourne un erreur 500 car c'est du serveur que provient l'erreur.
                     .catch((erreur) => {
                         console.log('Erreur : ', erreur);
                         res.status(500)
                         res.send({
-                            message: "echec lors de la modification de la sous-tache " + [req.params.id]
+                            message: "echec lors de la verification de la cle d'api "
                         });
                     });
             }
@@ -134,18 +170,36 @@ exports.modifierStatusSousTache = (req, res) => {
     SousTaches.verifierUneSousTache(req)
         .then((valeur) => {
             if (valeur != "") {
-                SousTaches.modifierStatusSousTache(req)
-                    // Si c'est un succès
-                    .then((tache) => {
+                Taches.verifierCle(req.headers.authorization.split(' ')[1], req.params.id)
+                    .then((cle) => {
+                        if (cle != "") {
+                            SousTaches.modifierStatusSousTache(req)
+                                // Si c'est un succès
+                                .then((tache) => {
 
-                        res.send({ message: "La sous-tache " + [req.params.id] + " a été modifier avec succès", sousTache: { id: req.params.id, complete: req.body.complete } })
+                                    res.send({ message: "La sous-tache " + [req.params.id] + " a été modifier avec succès", sousTache: { id: req.params.id, complete: req.body.complete } })
+                                })
+                                // S'il y a eu une erreur au niveau de la requête, on retourne un erreur 500 car c'est du serveur que provient l'erreur.
+                                .catch((erreur) => {
+                                    console.log('Erreur : ', erreur);
+                                    res.status(500)
+                                    res.send({
+                                        message: "echec lors de la modification de la sous-tache " + [req.params.id]
+                                    });
+                                });
+                        }
+                        else {
+                            res.status(403)
+                            res.send({
+                                message: "La tache ne vien pas de cet utilisateur"
+                            });
+                        }
                     })
-                    // S'il y a eu une erreur au niveau de la requête, on retourne un erreur 500 car c'est du serveur que provient l'erreur.
                     .catch((erreur) => {
                         console.log('Erreur : ', erreur);
                         res.status(500)
                         res.send({
-                            message: "echec lors de la modification de la sous-tache " + [req.params.id]
+                            message: "echec lors de la verification de la cle d'api "
                         });
                     });
             }
@@ -174,18 +228,36 @@ exports.supprimerUneSousTache = (req, res) => {
     SousTaches.verifierUneSousTache(req)
         .then((valeur) => {
             if (valeur[0]) {
-                SousTaches.supprimerUneSousTache(req)
-                    // Si c'est un succès
-                    .then((tache) => {
+                Taches.verifierCle(req.headers.authorization.split(' ')[1], req.params.id)
+                    .then((cle) => {
+                        if (cle != "") {
+                            SousTaches.supprimerUneSousTache(req)
+                                // Si c'est un succès
+                                .then((tache) => {
 
-                        res.send({ message: "La sous-tache " + [req.params.id] + " a été supprimer avec succès", sousTache: { id: req.params.id, tache: tache } })
+                                    res.send({ message: "La sous-tache " + [req.params.id] + " a été supprimer avec succès", sousTache: { id: req.params.id, tache: tache } })
+                                })
+                                // S'il y a eu une erreur au niveau de la requête, on retourne un erreur 500 car c'est du serveur que provient l'erreur.
+                                .catch((erreur) => {
+                                    console.log('Erreur : ', erreur);
+                                    res.status(500)
+                                    res.send({
+                                        message: "echec lors de la suppression de la sous-taches "
+                                    });
+                                });
+                        }
+                        else {
+                            res.status(403)
+                            res.send({
+                                message: "La tache ne vien pas de cet utilisateur"
+                            });
+                        }
                     })
-                    // S'il y a eu une erreur au niveau de la requête, on retourne un erreur 500 car c'est du serveur que provient l'erreur.
                     .catch((erreur) => {
                         console.log('Erreur : ', erreur);
                         res.status(500)
                         res.send({
-                            message: "echec lors de la suppression de la sous-taches "
+                            message: "echec lors de la verification de la cle d'api "
                         });
                     });
             }
